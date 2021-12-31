@@ -1,16 +1,22 @@
 package com.example.unstoppable;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
@@ -36,12 +42,30 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onPermissionGranted(PermissionGrantedResponse permissionGrantedResponse) {
                           ArrayList<File> songs=fetchSongs(Environment.getExternalStorageDirectory());
-                          String[] gaane=new String[songs.size()];
+                          int n;
+                          if(songs==null)
+                              n=0;
+                          else
+                              n=songs.size();
+                          String s="There are "+n+" songs";
+                          Toast toast=Toast.makeText(MainActivity.this,s,s.length());
+                          toast.show();
+                          String[] gaane=new String[n];
                           for(int i=0;i<gaane.length;i++)
                           {
                               gaane[i] = songs.get(i).getName().replace(".mp3", "");
                           }
-                          ArrayAdapter adapter=new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, gaane);
+                          ArrayAdapter adapter=new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, gaane)
+                          {
+                              @NonNull
+                              @Override
+                              public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                                  View view=super.getView(position, convertView, parent);
+                                  TextView text=(TextView) view.findViewById(android.R.id.text1);
+                                  text.setTextColor(Color.BLACK);
+                                  return view;
+                              }
+                          };
                           listView=findViewById(R.id.meraListView0);
                           listView.setAdapter(adapter);
                           listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -74,6 +98,8 @@ public class MainActivity extends AppCompatActivity {
     {
         ArrayList<File> a=new ArrayList<>();
         File[] file=fp.listFiles();
+        if(file==null)
+            return a;
         for(File f:file)
         {
             if(f.isDirectory()&&!f.isHidden())
