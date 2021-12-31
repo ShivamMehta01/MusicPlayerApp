@@ -128,6 +128,26 @@ public class PlaySong extends AppCompatActivity {
                 mediaPlayer=MediaPlayer.create(getApplicationContext(),uri);
                 mediaPlayer.start();
                 mediaPlayer.setLooping(true);
+                seekBar.setMax(mediaPlayer.getDuration());
+                updateSeek=new Thread(){
+                    @Override
+                    public void run() {
+                        int currPos=0;
+                        try{
+                            while(currPos<mediaPlayer.getDuration())
+                            {
+                                currPos=mediaPlayer.getCurrentPosition();
+                                seekBar.setProgress(currPos);
+                                sleep(500);
+                            }
+                        }
+                        catch(Exception e)
+                        {
+                            e.printStackTrace();
+                        }
+                    }
+                };
+                updateSeek.start();
             }
         });
         right.setOnClickListener(new View.OnClickListener() {
@@ -151,6 +171,26 @@ public class PlaySong extends AppCompatActivity {
                 mediaPlayer=MediaPlayer.create(getApplicationContext(),uri);
                 mediaPlayer.start();
                 mediaPlayer.setLooping(true);
+                seekBar.setMax(mediaPlayer.getDuration());
+                updateSeek=new Thread(){
+                    @Override
+                    public void run() {
+                        int currPos=0;
+                        try{
+                            while(currPos<mediaPlayer.getDuration())
+                            {
+                                currPos=mediaPlayer.getCurrentPosition();
+                                seekBar.setProgress(currPos);
+                                sleep(500);
+                            }
+                        }
+                        catch(Exception e)
+                        {
+                            e.printStackTrace();
+                        }
+                    }
+                };
+                updateSeek.start();
             }
         });
 
